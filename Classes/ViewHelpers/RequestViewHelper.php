@@ -141,6 +141,7 @@ class RequestViewHelper extends AbstractViewHelper
             }
         } else {
             if (count($firstUriPartExploded) !== count($dimensionPresets)) {
+                $this->appendDefaultDimensionPresetUriSegments($dimensionPresets, $path);
                 return;
             }
             foreach ($dimensionPresets as $dimensionName => $dimensionPreset) {
@@ -153,5 +154,19 @@ class RequestViewHelper extends AbstractViewHelper
         }
 
         $path = $matches['firstUriPart'] . '/' . $path;
+    }
+
+    /**
+     * @param array $dimensionPresets
+     * @param string $path
+     * @return void
+     */
+    protected function appendDefaultDimensionPresetUriSegments($dimensionPresets, &$path)
+    {
+        $defaultDimensionPresetUriSegments = [];
+        foreach ($dimensionPresets as $dimensionName => $dimensionPreset) {
+            $defaultDimensionPresetUriSegments[] = $dimensionPreset['presets'][$dimensionPreset['defaultPreset']]['uriSegment'];
+        }
+        $path = implode('_', $defaultDimensionPresetUriSegments) . '/' . $path;
     }
 }
